@@ -1,0 +1,22 @@
+network:
+  interface: "eth0"        # change to your NIC
+  victim_ip:   "192.168.1.10"
+  attacker_ip: "192.168.1.20"
+  nfqueue_num: 1
+
+firewall:
+  rules_file:    "firewall_engine/rules/rules.json"
+  default_action: "ALLOW"
+  audit_log:     "data/logs/firewall_audit.csv"
+
+ai:
+  xgboost_model:  "ai_engine/models/xgboost_model.pkl"
+  iforest_model:  "ai_engine/models/iforest_model.pkl"
+  scaler:         "feature_pipeline/scaler.pkl"
+  block_threshold: 0.9
+  alert_threshold: 0.7
+
+dashboard:
+  host: "0.0.0.0"
+  port: 5000
+  refresh_interval_sec: 3

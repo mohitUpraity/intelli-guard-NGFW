@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IntelliGuard Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 20px; }
+    h1   { color: #58a6ff; }
+    .cards { display: flex; gap: 16px; margin-bottom: 24px; }
+    .card  { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; flex: 1; }
+    .card h2 { margin: 0 0 8px; font-size: 14px; color: #8b949e; }
+    .card .val { font-size: 32px; font-weight: bold; }
+    .blocked { color: #f85149; }
+    .allowed { color: #3fb950; }
+    .alert   { color: #d29922; }
+    table    { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th,td    { padding: 8px 12px; border-bottom: 1px solid #21262d; text-align: left; }
+    th       { color: #8b949e; }
+  </style>
+</head>
+<body>
+  <h1>🛡 IntelliGuard Firewall</h1>
+  <div class="cards">
+    <div class="card"><h2>Total Packets</h2><div class="val" id="total">—</div></div>
+    <div class="card"><h2>Blocked</h2><div class="val blocked" id="blocked">—</div></div>
+    <div class="card"><h2>Allowed</h2><div class="val allowed" id="allowed">—</div></div>
+    <div class="card"><h2>Alerts</h2><div class="val alert" id="alerts">—</div></div>
+  </div>
+  <canvas id="chart" height="80"></canvas>
+  <h2 style="margin-top:24px">Recent Events</h2>
+  <table><thead><tr><th>Time</th><th>Src IP</th><th>Proto</th><th>Port</th><th>Score</th><th>Verdict</th></tr></thead>
+  <tbody id="log-body"></tbody></table>
+
+  <script>
+    async function refresh() {
+      const stats = await fetch("/api/stats").then(r => r.json());
+      document.getElementById("total").textContent   = stats.total;
+      document.getElementById("blocked").textContent = stats.blocked;
+      document.getElementById("allowed").textContent = stats.allowed;
+      document.getElementById("alerts").textContent  = stats.alerts;
+
+      const logs = await fetch("/api/logs").then(r => r.json());
+      const body = document.getElementById("log-body");
+      body.innerHTML = logs.reverse().slice(0,50).map(r => `
+        <tr>
+          <td>${r.timestamp?.slice(11,19)??""}</td>
+          <td>${r.src_ip}</td><td>${r.proto}</td><td>${r.dst_port}</td>
+          <td>${r.score}</td>
+          <td style="color:${r.verdict==="BLOCK"?"#f85149":r.verdict==="ALERT"?"#d29922":"#3fb950"}">${r.verdict}</td>
+        </tr>`).join("");
+    }
+    refresh();
+    setInterval(refresh, 3000);
+  </script>
+</body>
+</html>

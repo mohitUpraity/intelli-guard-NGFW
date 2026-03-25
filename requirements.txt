@@ -1,0 +1,30 @@
+# Network Layer (Mohit)
+scapy
+pyshark
+netfilterqueue; sys_platform == "linux"
+
+# Feature Pipeline (Ilma)
+pandas
+numpy
+scikit-learn
+joblib
+
+# AI Engine (Kunal)
+xgboost
+tensorflow
+onnx
+matplotlib
+seaborn
+jupyter
+
+# Firewall Engine (Megha)
+# (uses stdlib + above)
+
+# Dashboard (Priya)
+flask
+flask-cors
+
+# Shared
+pyyaml
+colorama
+tqdm
