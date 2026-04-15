@@ -21,6 +21,50 @@ def extract(flow_key: tuple, packets: list) -> dict:
     flow_key: (src_ip, dst_ip, sport, dport, proto)
     packets : list of raw packet dicts from network_layer
     Returns : flat feature dict ready for Kunal's model
+    (extract flow-based features from packet list)
     """
-    # TODO: Ilma — implement real calculations below
-    raise NotImplementedError("extractor.py — Ilma to implement")
+    if not packets:
+        return None
+    
+    pkt_count = len(packets)
+
+    #packet size
+    size = [p.get("packet_size",0) for p in packets]
+    byte_count = sum(size)
+
+    #time-based feature
+    timestamps = [p.get("timestamp",0) for p in packets]
+    duration = max(timestamps) - min(timestamps) if len(timestamps)> 1 else 0
+
+    mean_pkt_size = float(np.mean(size)) 
+    std_pkt_size = float(np.std(size))
+
+    #port feature
+    src_ip, dst_ip, sport, dport, proto = flow_key
+
+    proto_tcp = 1 if proto == "TCP" else 0
+    proto_udp = 1 if proto == "UDP" else 0
+    proto_icmp = 1 if proto == "ICMP" else 0
+
+    #flags
+    syn_flag = sum(1 for p in packets if p.get("flags")== "SYN")
+    fin_flag = sum(1 for p in packets if p.get("flags") == "FIN")
+    rst_flag = sum(1 for p in packets if p.get("flags") == "RST")
+
+    return{
+        "pkt_count": pkt_count,
+        "byte_count": byte_count,
+        "duration": duration,
+        "mean_pkt_size": mean_pkt_size,
+        "std_pkt_size": std_pkt_size,
+        "src_port": sport,
+        "dst_port": dport,
+        "proto_tcp": proto_tcp,
+        "proto_udp": proto_udp,
+        "proto_icmp": proto_icmp,
+        "syn_flag": syn_flag,
+        "fin_flag": fin_flag,
+        "rst_flag": rst_flag,
+    }
+
+   
