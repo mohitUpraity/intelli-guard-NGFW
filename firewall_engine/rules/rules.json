@@ -1,8 +1,42 @@
 [
-  {"id": 1, "proto": "TCP",  "src_ip": "ANY", "dst_port": 22,   "action": "BLOCK",  "note": "Block SSH from outside"},
-  {"id": 2, "proto": "TCP",  "src_ip": "ANY", "dst_port": 4444, "action": "BLOCK",  "note": "Block netcat reverse shell"},
-  {"id": 3, "proto": "TCP",  "src_ip": "ANY", "dst_port": 80,   "action": "ALLOW",  "note": "Allow HTTP"},
-  {"id": 4, "proto": "TCP",  "src_ip": "ANY", "dst_port": 443,  "action": "ALLOW",  "note": "Allow HTTPS"},
-  {"id": 5, "proto": "UDP",  "src_ip": "ANY", "dst_port": 53,   "action": "ALLOW",  "note": "Allow DNS"},
-  {"id": 6, "proto": "ICMP", "src_ip": "ANY", "dst_port": null, "action": "ALLOW",  "note": "Allow ping"}
+  {
+    "comment": "Block all traffic from known attacker IP (set this to your attacker_ip from config.yaml)",
+    "src_ip": "192.168.1.20",
+    "proto": "ANY",
+    "dst_port": null,
+    "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Block SYN flood port — common DoS target",
+    "src_ip": "ANY",
+    "proto": "TCP",
+    "dst_port": 80,
+    "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Always allow SSH from localhost (so you don't lock yourself out)",
+    "src_ip": "127.0.0.1",
+    "proto": "TCP",
+    "dst_port": 22,
+    "action": "ALLOW",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Block Telnet — unencrypted, always suspicious",
+    "src_ip": "ANY",
+    "proto": "TCP",
+    "dst_port": 23,
+    "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Block common malware C2 port",
+    "src_ip": "ANY",
+    "proto": "TCP",
+    "dst_port": 4444,
+    "action": "BLOCK",
+    "source": "STATIC"
+  }
 ]
