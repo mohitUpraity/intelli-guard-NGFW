@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -53,5 +53,54 @@
     refresh();
     setInterval(refresh, 3000);
   </script>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IntelliGuard Dashboard</title>
+    <script>
+        async function loadLogs() {
+            const res = await fetch('/api/logs');
+            const data = await res.json();
+
+            let table = document.getElementById("logs");
+            table.innerHTML = "";
+
+            data.forEach(log => {
+                let row = `
+                <tr>
+                    <td>${log.time}</td>
+                    <td>${log.ip}</td>
+                    <td>${log.attack}</td>
+                    <td>${log.status}</td>
+                </tr>`;
+                table.innerHTML += row;
+            });
+        }
+
+        setInterval(loadLogs, 2000);
+    </script>
+</head>
+<body>
+
+<h2>🔥 IntelliGuard Firewall Dashboard</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Attack Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="logs"></tbody>
+</table>
+
 </body>
 </html>
