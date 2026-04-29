@@ -12,3 +12,6 @@ def predict_threat(input_data):
         return "ALERT"
     else:
         return "ALLOW"
+        
+if __name__ == "__main__":
+    print("Model loaded successfully")
