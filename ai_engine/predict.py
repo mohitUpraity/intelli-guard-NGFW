@@ -15,6 +15,11 @@ model = joblib.load(MODEL_PATH)
 
 
 def predict_threat(input_data):
+
+    # Pad missing features
+    if len(input_data) < 38:
+        input_data = list(input_data) + [0] * (38 - len(input_data))
+
     prob = model.predict_proba([input_data])[0]
     score = max(prob)
 
