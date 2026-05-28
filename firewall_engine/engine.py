@@ -102,7 +102,7 @@ def run():
             decision_source = "AI_MODEL"
 
         # ── Step 3: Log to CSV ────────────────────────────────────────
-        audit.log(features, score, final)
+        audit.log(features, score, final, decision_source)
 
         # ── Step 4: Enforce (drop / accept packet) ────────────────────
         _call_enforcer(final, features)

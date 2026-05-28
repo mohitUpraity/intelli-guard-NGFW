@@ -38,4 +38,12 @@ def health():
     return jsonify({"status": "ok"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    import yaml
+    try:
+        with open("config.yaml") as f:
+            config = yaml.safe_load(f)
+        port = config["dashboard"]["port"]
+    except Exception:
+        port = 5001
+        
+    app.run(host="0.0.0.0", port=port, debug=False)

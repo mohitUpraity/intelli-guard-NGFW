@@ -2,56 +2,649 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IntelliGuard Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛡️ IntelliGuard NGFW - Tactical Cyber Command</title>
+  <!-- Google Fonts: Outfit for premium UI, JetBrains Mono for code/logs -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body { font-family: sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 20px; }
-    h1   { color: #58a6ff; }
-    .cards { display: flex; gap: 16px; margin-bottom: 24px; }
-    .card  { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; flex: 1; }
-    .card h2 { margin: 0 0 8px; font-size: 14px; color: #8b949e; }
-    .card .val { font-size: 32px; font-weight: bold; }
-    .blocked { color: #f85149; }
-    .allowed { color: #3fb950; }
-    .alert   { color: #d29922; }
-    table    { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th,td    { padding: 8px 12px; border-bottom: 1px solid #21262d; text-align: left; }
-    th       { color: #8b949e; }
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: rgba(13, 20, 35, 0.7);
+      --border-card: rgba(255, 255, 255, 0.06);
+      --text-main: #f0f4f9;
+      --text-muted: #8b9bb4;
+      --primary: #38bdf8;       /* Neon Cyan */
+      --success: #10b981;       /* Neon Emerald */
+      --danger: #f43f5e;        /* Neon Rose */
+      --warning: #fbbf24;       /* Neon Amber */
+      --glow-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(244, 63, 94, 0.05) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header Section */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      backdrop-filter: blur(12px);
+      padding: 20px 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      font-size: 32px;
+      color: var(--primary);
+      text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+      animation: pulse 2s infinite alternate;
+    }
+
+    .brand-text h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #ffffff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 2px;
+    }
+
+    /* Pulse animation for system state */
+    @keyframes pulse {
+      0% { transform: scale(1); text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+      100% { transform: scale(1.05); text-shadow: 0 0 25px rgba(56, 189, 248, 0.8); }
+    }
+
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--success);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--success);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Core KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      backdrop-filter: blur(12px);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+    }
+
+    .kpi-card.total::before { background: var(--primary); }
+    .kpi-card.blocked::before { background: var(--danger); }
+    .kpi-card.allowed::before { background: var(--success); }
+    .kpi-card.alerts::before { background: var(--warning); }
+
+    .kpi-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-icon {
+      font-size: 18px;
+    }
+
+    .kpi-card.total .kpi-icon { color: var(--primary); }
+    .kpi-card.blocked .kpi-icon { color: var(--danger); }
+    .kpi-card.allowed .kpi-icon { color: var(--success); }
+    .kpi-card.alerts .kpi-icon { color: var(--warning); }
+
+    .kpi-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    /* Content Layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 16px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title i {
+      color: var(--primary);
+    }
+
+    /* Charts Container */
+    .charts-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    /* Dynamic ban list grid */
+    .ban-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ban-badge {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      color: var(--danger);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 10px rgba(244, 63, 94, 0.05);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Logs Table Panel */
+    .logs-panel {
+      margin-top: 32px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    tr {
+      transition: background 0.2s ease;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    /* Badge indicators */
+    .verdict-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .verdict-badge.allow {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .verdict-badge.block {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      color: var(--danger);
+      box-shadow: 0 0 10px rgba(244, 63, 94, 0.1);
+    }
+
+    .verdict-badge.alert {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      color: var(--warning);
+    }
+
+    .source-badge {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .source-badge.ai {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
-  <h1>🛡 IntelliGuard Firewall</h1>
-  <div class="cards">
-    <div class="card"><h2>Total Packets</h2><div class="val" id="total">—</div></div>
-    <div class="card"><h2>Blocked</h2><div class="val blocked" id="blocked">—</div></div>
-    <div class="card"><h2>Allowed</h2><div class="val allowed" id="allowed">—</div></div>
-    <div class="card"><h2>Alerts</h2><div class="val alert" id="alerts">—</div></div>
+
+  <div class="dashboard-container">
+    
+    <!-- Header -->
+    <header>
+      <div class="brand-section">
+        <i class="fa-solid fa-shield-halved brand-logo"></i>
+        <div class="brand-text">
+          <h1>IntelliGuard NGFW</h1>
+          <p>Tactical Cyber Command Console</p>
+        </div>
+      </div>
+      <div class="system-status">
+        <div class="status-dot"></div>
+        <span>GATEWAY ACTIVE & SECURED</span>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card total">
+        <div class="kpi-header">
+          <span>Total Flows Captured</span>
+          <i class="fa-solid fa-chart-line kpi-icon"></i>
+        </div>
+        <div class="kpi-value" id="total">0</div>
+      </div>
+      <div class="kpi-card allowed">
+        <div class="kpi-header">
+          <span>Allowed Traffic</span>
+          <i class="fa-solid fa-circle-check kpi-icon"></i>
+        </div>
+        <div class="kpi-value allowed" id="allowed">0</div>
+      </div>
+      <div class="kpi-card blocked">
+        <div class="kpi-header">
+          <span>Dropped Attacks</span>
+          <i class="fa-solid fa-circle-xmark kpi-icon"></i>
+        </div>
+        <div class="kpi-value blocked" id="blocked">0</div>
+      </div>
+      <div class="kpi-card alerts">
+        <div class="kpi-header">
+          <span>Suspicious Anomalies</span>
+          <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
+        </div>
+        <div class="kpi-value alert" id="alerts">0</div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-layout">
+      
+      <!-- Left Panel: Chart & Visualization -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-wave-square"></i>
+            <span>Defensive Telemetry (Threat Vector Timeline)</span>
+          </div>
+        </div>
+        <div class="charts-wrapper">
+          <div class="chart-container">
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: IP Quarantine Blocklist -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title" style="color: var(--danger);">
+            <i class="fa-solid fa-ban"></i>
+            <span>Active Dynamic Quarantined IPs</span>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          These addresses are dynamically blocked at the OS kernel layer by the firewall enforcer.
+        </p>
+        <div class="ban-grid" id="quarantine-grid">
+          <!-- Dinamically generated -->
+          <span style="font-size: 13px; color: var(--text-muted); font-style: italic;">No active threat bans.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Logs Panel -->
+    <div class="panel logs-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Live Stateful Security Log Audit</span>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Source Host</th>
+              <th>Destination</th>
+              <th>Protocol</th>
+              <th>Port</th>
+              <th>Risk Score</th>
+              <th>Mechanism</th>
+              <th>Enforcement Action</th>
+            </tr>
+          </thead>
+          <tbody id="log-body">
+            <tr>
+              <td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
+                Waiting for incoming microflows...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
-  <canvas id="chart" height="80"></canvas>
-  <h2 style="margin-top:24px">Recent Events</h2>
-  <table><thead><tr><th>Time</th><th>Src IP</th><th>Proto</th><th>Port</th><th>Score</th><th>Verdict</th></tr></thead>
-  <tbody id="log-body"></tbody></table>
 
   <script>
+    // Initialize Chart.js
+    const ctx = document.getElementById('trafficChart').getContext('2d');
+    
+    // Gradient fill for line chart
+    const primaryGlow = ctx.createLinearGradient(0, 0, 0, 220);
+    primaryGlow.addColorStop(0, 'rgba(56, 189, 248, 0.3)');
+    primaryGlow.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+    const trafficChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [], // Timestamps
+        datasets: [
+          {
+            label: 'Total Packets',
+            data: [],
+            borderColor: '#38bdf8',
+            backgroundColor: primaryGlow,
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            ticks: { color: '#8b9bb4', font: { family: 'Outfit', size: 10 } }
+          },
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            ticks: { color: '#8b9bb4', font: { family: 'Outfit', size: 10 } }
+          }
+        }
+      }
+    });
+
+    const activeBans = new Set();
+    const historyData = [];
+    const maxHistoryPoints = 15;
+
     async function refresh() {
+      // 1. Fetch Stats
       const stats = await fetch("/api/stats").then(r => r.json());
       document.getElementById("total").textContent   = stats.total;
       document.getElementById("blocked").textContent = stats.blocked;
       document.getElementById("allowed").textContent = stats.allowed;
       document.getElementById("alerts").textContent  = stats.alerts;
 
+      // 2. Fetch Logs
       const logs = await fetch("/api/logs").then(r => r.json());
       const body = document.getElementById("log-body");
-      body.innerHTML = logs.reverse().slice(0,50).map(r => `
-        <tr>
-          <td>${r.timestamp?.slice(11,19)??""}</td>
-          <td>${r.src_ip}</td><td>${r.proto}</td><td>${r.dst_port}</td>
-          <td>${r.score}</td>
-          <td style="color:${r.verdict==="BLOCK"?"#f85149":r.verdict==="ALERT"?"#d29922":"#3fb950"}">${r.verdict}</td>
-        </tr>`).join("");
+      
+      if (logs.length > 0) {
+        // Reverse to display newest logs first
+        const sortedLogs = [...logs].reverse();
+        
+        body.innerHTML = sortedLogs.slice(0, 80).map(r => {
+          const rawTime = r.timestamp || "";
+          const timeFormatted = rawTime.includes("T") ? rawTime.split("T")[1].slice(0, 8) : rawTime.slice(11, 19);
+          
+          let verdictClass = "allow";
+          let verdictText = "ALLOWED";
+          if (r.verdict === "BLOCK") {
+            verdictClass = "block";
+            verdictText = "DROPPED";
+            if (r.src_ip && r.src_ip !== "127.0.0.1" && r.src_ip !== "ANY") {
+              activeBans.add(r.src_ip);
+            }
+          } else if (r.verdict === "ALERT") {
+            verdictClass = "alert";
+            verdictText = "ALERTED";
+          }
+          
+          const isAI = r.source === "AI_MODEL" || r.source === "AI_GENERATED";
+          const sourceClass = isAI ? "source-badge ai" : "source-badge";
+          const sourceText = isAI ? "🤖 AI MODEL" : "📋 RULE BASE";
+          
+          return `
+            <tr>
+              <td>${timeFormatted}</td>
+              <td style="font-weight: 700; color: #ffffff;">${r.src_ip || "—"}</td>
+              <td>${r.dst_ip || "—"}</td>
+              <td>${r.proto || "TCP"}</td>
+              <td>${r.dst_port || "—"}</td>
+              <td style="color: ${r.score > 0.7 ? 'var(--danger)' : 'var(--text-muted)'}">${parseFloat(r.score || 0).toFixed(3)}</td>
+              <td><span class="${sourceClass}">${sourceText}</span></td>
+              <td><span class="verdict-badge ${verdictClass}">${verdictText}</span></td>
+            </tr>`;
+        }).join("");
+        
+        // Update Quarantine Board
+        const banGrid = document.getElementById("quarantine-grid");
+        if (activeBans.size > 0) {
+          banGrid.innerHTML = Array.from(activeBans).map(ip => `
+            <span class="ban-badge">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              ${ip}
+            </span>
+          `).join("");
+        } else {
+          banGrid.innerHTML = `<span style="font-size: 13px; color: var(--text-muted); font-style: italic;">No active threat bans.</span>`;
+        }
+
+        // 3. Update Chart Timeline (simulate dynamic timeline points)
+        const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        historyData.push({ label: timeNow, value: stats.total });
+        
+        if (historyData.length > maxHistoryPoints) {
+          historyData.shift();
+        }
+        
+        trafficChart.data.labels = historyData.map(d => d.label);
+        trafficChart.data.datasets[0].data = historyData.map(d => d.value);
+        trafficChart.update();
+      }
     }
+    
+    // Initial fetch and set interval loop
     refresh();
-    setInterval(refresh, 3000);
+    setInterval(refresh, 2500);
   </script>
 </body>
 </html>
