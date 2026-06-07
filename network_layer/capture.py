@@ -133,17 +133,30 @@ def _run_traffic_simulation():
                     src_port = random.randint(1024, 65535)
                     
                     for i in range(5):
+                        # Stealth scan trick: mix SYN and PA flags, and use small packet sizes to mimic probing
+                        current_flags = flags
+                        current_size = random.randint(64, 1500)
+                        
+                        if sub_mode == "alert":
+                            current_size = 64 # Tiny packets
+                            if i % 2 == 0:
+                                current_flags = "SYN"
+                            else:
+                                current_flags = "PA"
+                        elif sub_mode == "ping_of_death":
+                            current_size = random.randint(60000, 65535)
+
                         record = {
                             "src_ip":      src_ip,
                             "dst_ip":      target,
                             "proto":       proto,
                             "src_port":    src_port,
                             "dst_port":    dport,
-                            "length":      random.randint(60000, 65535) if sub_mode == "ping_of_death" else random.randint(64, 1500),
-                            "packet_size": random.randint(60000, 65535) if sub_mode == "ping_of_death" else random.randint(64, 1500),
+                            "length":      current_size,
+                            "packet_size": current_size,
                             "ttl":         64,
-                            "tcp_flags":   flags,
-                            "flags":       flags,
+                            "tcp_flags":   current_flags,
+                            "flags":       current_flags,
                             "timestamp":   t_base + (f * 0.05) + (i * 0.001),
                             "source_mac":  "00:11:22:33:44:55",
                             "dest_mac":    "66:77:88:99:aa:bb",

@@ -19,30 +19,24 @@ verdict_queue = queue.Queue()
 
 def predict_threat(processed_array, raw_features):
     """
-    Safely flattens the preprocessed 2D numpy array, pads it to the 38 features
-    expected by the NSL-KDD Random Forest model, and runs prediction.
+    Safely flattens the preprocessed 2D numpy array and runs prediction.
     """
-    # 1. Flatten the incoming scaled features array (shape (1,16) -> (16,))
     flat_features = list(processed_array.flatten())
     
-    # 2. Pad missing features up to 38 expected by the model
-    if len(flat_features) < 38:
-        flat_features = flat_features + [0.0] * (38 - len(flat_features))
-        
-    # 3. Model predict
     prob = model.predict_proba([flat_features])[0]
-    score = float(prob[1]) if len(prob) > 1 else float(prob[0])
+    print(f"Probabilities: {prob}")
+    
+    # We trained with 3 classes: 0 (Allow), 1 (Alert), 2 (Block)
+    # Map probabilities to a 0.0 - 1.0 threat score
+    # Class 1 (Alert) contributes to middle range, Class 2 (Block) heavily
+    score = float(prob[1] * 0.45 + prob[2] * 0.95)
 
-    if raw_features.get("src_ip") == "192.168.1.200":
-        score = 0.45
+    if score > 0.55:
+        verdict = "BLOCK"
+    elif score > 0.40:
         verdict = "ALERT"
     else:
-        if score > 0.55:
-            verdict = "BLOCK"
-        elif score > 0.40:
-            verdict = "ALERT"
-        else:
-            verdict = "ALLOW"
+        verdict = "ALLOW"
 
     return score, verdict
 
