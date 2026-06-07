@@ -71,52 +71,62 @@ def _run_traffic_simulation():
         t_base = time.time()
         
         if sim_state.get("active"):
-            mode = sim_state.get("mode", "syn_flood")
             target = sim_state.get("target", victim_ip)
-            intensity = max(0, int(sim_state.get("intensity", 100)))
+            intensities = sim_state.get("intensities", {})
             
-            # Map mode to traffic attributes
-            if mode == "syn_flood":
-                dport, proto, flags = 80, "TCP", "SYN"
-            elif mode == "udp_flood":
-                dport, proto, flags = random.randint(1024, 65535), "UDP", ""
-            elif mode == "icmp_sweep":
-                dport, proto, flags = 0, "ICMP", ""
-            elif mode == "port_scan":
-                dport, proto, flags = random.choice([22, 80, 443, 3306, 8080]), "TCP", "SYN"
-            else:
-                dport, proto, flags = 80, "TCP", "SYN"
+            for mode, intensity in intensities.items():
+                intensity = max(0, int(intensity))
+                if intensity == 0:
+                    continue
                 
-            # Intensity 10 to 1000 => scale to 1 to 100 packets per 0.5s loop
-            packets_to_send = max(0, intensity // 10)
-            
-            # We must group packets into flows of at least 5 packets 
-            # otherwise the ML feature pipeline drops them!
-            flows_to_generate = max(1, packets_to_send // 5)
-            
-            for f in range(flows_to_generate):
-                # Pick a steady connection tuple for this micro-burst
-                src_ip = random.choice(attacker_ips)
-                src_port = random.randint(1024, 65535)
+                # Map mode to traffic attributes
+                if mode == "syn_flood":
+                    dport, proto, flags = 80, "TCP", "SYN"
+                elif mode == "udp_flood":
+                    dport, proto, flags = random.randint(1024, 65535), "UDP", ""
+                elif mode == "icmp_sweep":
+                    dport, proto, flags = 0, "ICMP", ""
+                elif mode == "port_scan":
+                    dport, proto, flags = random.choice([22, 80, 443, 3306, 8080]), "TCP", "SYN"
+                elif mode == "http_flood":
+                    dport, proto, flags = 80, "TCP", "PA"
+                elif mode == "ping_of_death":
+                    dport, proto, flags = 0, "ICMP", ""
+                elif mode == "xmas_scan":
+                    dport, proto, flags = random.choice([22, 80, 443, 3306, 8080]), "TCP", "FPU"
+                else:
+                    dport, proto, flags = 80, "TCP", "SYN"
+                    
+                # Intensity 10 to 1000 => scale to 1 to 100 packets per 0.5s loop
+                packets_to_send = max(0, intensity // 10)
                 
-                for i in range(5):
-                    record = {
-                        "src_ip":      src_ip,
-                        "dst_ip":      target,
-                        "proto":       proto,
-                        "src_port":    src_port,
-                        "dst_port":    dport,
-                        "length":      random.randint(64, 1500),
-                        "packet_size": random.randint(64, 1500),
-                        "ttl":         64,
-                        "tcp_flags":   flags,
-                        "flags":       flags,
-                        "timestamp":   t_base + (f * 0.05) + (i * 0.001),
-                        "source_mac":  "00:11:22:33:44:55",
-                        "dest_mac":    "66:77:88:99:aa:bb",
-                        "http_method": ""
-                    }
-                    packet_queue.put(record)
+                # We must group packets into flows of at least 5 packets 
+                # otherwise the ML feature pipeline drops them!
+                flows_to_generate = max(1, packets_to_send // 5)
+                
+                for f in range(flows_to_generate):
+                    # Pick a steady connection tuple for this micro-burst
+                    src_ip = random.choice(attacker_ips)
+                    src_port = random.randint(1024, 65535)
+                    
+                    for i in range(5):
+                        record = {
+                            "src_ip":      src_ip,
+                            "dst_ip":      target,
+                            "proto":       proto,
+                            "src_port":    src_port,
+                            "dst_port":    dport,
+                            "length":      random.randint(60000, 65535) if mode == "ping_of_death" else random.randint(64, 1500),
+                            "packet_size": random.randint(60000, 65535) if mode == "ping_of_death" else random.randint(64, 1500),
+                            "ttl":         64,
+                            "tcp_flags":   flags,
+                            "flags":       flags,
+                            "timestamp":   t_base + (f * 0.05) + (i * 0.001),
+                            "source_mac":  "00:11:22:33:44:55",
+                            "dest_mac":    "66:77:88:99:aa:bb",
+                            "http_method": ""
+                        }
+                        packet_queue.put(record)
             
             # Sleep 0.5s for highly responsive UI updates
             time.sleep(0.5)

@@ -33,9 +33,9 @@ def predict_threat(processed_array, raw_features):
     prob = model.predict_proba([flat_features])[0]
     score = float(prob[1]) if len(prob) > 1 else float(prob[0])
 
-    if score > 0.9:
+    if score > 0.55:
         verdict = "BLOCK"
-    elif score > 0.7:
+    elif score > 0.40:
         verdict = "ALERT"
     else:
         verdict = "ALLOW"
