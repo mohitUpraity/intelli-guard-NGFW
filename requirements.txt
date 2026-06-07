@@ -13,6 +13,7 @@ joblib
 xgboost
 tensorflow
 onnx
+ml-dtypes>=0.4.0
 matplotlib
 seaborn
 jupyter
