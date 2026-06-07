@@ -15,15 +15,14 @@
       --border-card: rgba(56, 189, 248, 0.15);
       --text-main: #f0f4f9;
       --text-muted: #64748b;
-      --primary: #0ea5e9;       /* Cyan */
+      --primary: #0ea5e9;
       --primary-glow: #38bdf8;
-      --success: #10b981;       /* Emerald */
-      --danger: #e11d48;        /* Rose */
-      --warning: #f59e0b;       /* Amber */
+      --success: #10b981;
+      --danger: #e11d48;
+      --warning: #f59e0b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Outfit', sans-serif;
       background: var(--bg-dark);
@@ -51,23 +50,24 @@
     .brand-text h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #fff 30%, var(--primary-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .brand-text p { font-size: 10px; color: var(--text-muted); font-weight: 800; letter-spacing: 3px; text-transform: uppercase; }
 
+    /* Nav Tabs */
+    .nav-tabs { display: flex; gap: 12px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .nav-tab { background: transparent; color: var(--text-muted); border: none; padding: 8px 16px; border-radius: 8px; font-family: 'Outfit'; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .nav-tab.active { background: var(--primary); color: #fff; box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
+
+    /* Tab Content */
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes pulse { 0% { filter: drop-shadow(0 0 5px var(--primary-glow)); } 100% { filter: drop-shadow(0 0 15px var(--primary-glow)); } }
 
-    .system-status {
-      display: flex; align-items: center; gap: 10px;
-      background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 8px 16px; border-radius: 30px; font-size: 11px; font-weight: 800; color: var(--success); letter-spacing: 1px;
-    }
+    .system-status { display: flex; align-items: center; gap: 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 16px; border-radius: 30px; font-size: 11px; font-weight: 800; color: var(--success); letter-spacing: 1px; }
     .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); animation: blink 1.5s infinite; }
     @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-    /* KPI Grid */
-    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-    .kpi-card {
-      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px); padding: 20px; border-radius: 16px; position: relative; overflow: hidden;
-      transition: transform 0.2s;
-    }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 16px; }
+    .kpi-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(12px); padding: 20px; border-radius: 16px; position: relative; overflow: hidden; transition: transform 0.2s; }
     .kpi-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.1); }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
     .kpi-card.total::before { background: var(--primary); }
@@ -75,46 +75,28 @@
     .kpi-card.blocked::before { background: var(--danger); box-shadow: 0 0 15px var(--danger); }
     .kpi-card.alerts::before { background: var(--warning); }
     .kpi-card.latency::before { background: linear-gradient(90deg, var(--primary), var(--success)); }
-    
     .kpi-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
     .kpi-icon { font-size: 16px; }
     .kpi-value { font-size: 32px; font-weight: 800; line-height: 1.1; }
 
-    /* Main Grid */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 16px;
-    }
-
-    .panel {
-      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px); border-radius: 16px; padding: 20px;
-      display: flex; flex-direction: column;
-    }
+    .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+    .panel { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(12px); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; }
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
     .panel-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: #fff; }
     .panel-title i { color: var(--primary-glow); }
-
     .chart-wrapper { position: relative; height: 260px; width: 100%; }
-    
-    /* Stats Layout */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
     .mini-chart { position: relative; height: 180px; width: 100%; display: flex; justify-content: center; }
 
-    /* Metric List & Ban Grid */
     .metric-list { display: flex; flex-direction: column; gap: 10px; }
     .metric-item { display: flex; justify-content: space-between; padding: 10px 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; }
     .metric-name { font-size: 12px; font-weight: 600; color: var(--text-muted); }
     .metric-val { font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
     .ban-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 140px; overflow-y: auto; }
-    .ban-badge { background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--danger); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; animation: slideIn 0.3s ease; }
+    .ban-badge { background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--danger); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 
-    @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    /* Logs Table */
-    .table-container { overflow-x: auto; max-height: 350px; overflow-y: auto; }
+    .table-container { overflow-x: auto; max-height: 500px; overflow-y: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th { background: rgba(0,0,0,0.2); color: var(--text-muted); font-weight: 700; text-transform: uppercase; padding: 10px 16px; text-align: left; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); }
     td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); font-family: 'JetBrains Mono'; }
@@ -129,21 +111,30 @@
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    
+    .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 2px; background-color: var(--text-muted); transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: rgba(225, 29, 72, 0.3); border-color: var(--danger); box-shadow: 0 0 10px rgba(225, 29, 72, 0.4); }
+    input:checked + .slider:before { transform: translateX(18px); background-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--danger); cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px var(--danger); }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.1); border-radius: 2px; }
 
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .stats-row { grid-template-columns: 1fr; }
-    }
+    /* Threat Intel Cards */
+    .intel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+    .intel-card { background: linear-gradient(180deg, rgba(225, 29, 72, 0.1), rgba(0,0,0,0)); border: 1px solid rgba(225, 29, 72, 0.3); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .intel-ip { font-family: 'JetBrains Mono'; font-weight: 700; color: #fff; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .intel-sig { color: var(--danger); font-size: 12px; font-weight: 800; text-transform: uppercase; background: rgba(225, 29, 72, 0.15); padding: 4px 8px; border-radius: 4px; display: inline-block; width: max-content; }
+    .intel-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: var(--text-muted); }
+    .intel-details span { color: #fff; font-weight: 700; }
   </style>
 </head>
 <body>
 
   <div class="dashboard-container">
-    
     <header>
       <div class="brand-section">
         <i class="fa-solid fa-shield-halved brand-logo"></i>
@@ -152,128 +143,267 @@
           <p>Tactical AI-Driven Resilient Security Gateway</p>
         </div>
       </div>
-      <div class="system-status">
-        <div class="status-dot"></div>
-        <span>SYSTEM SECURE (TACTICAL NODE 01)</span>
+
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('overview')"><i class="fa-solid fa-chart-pie"></i> Overview</button>
+        <button class="nav-tab" onclick="switchTab('intel')"><i class="fa-solid fa-brain"></i> Threat Intel</button>
+        <button class="nav-tab" onclick="switchTab('logs')"><i class="fa-solid fa-list-check"></i> System Logs</button>
+      </div>
+
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <button id="sim-btn" onclick="toggleSimModal()" style="background: rgba(14, 165, 233, 0.15); border: 1px solid var(--primary); color: var(--primary-glow); padding: 8px 16px; border-radius: 8px; font-family: 'Outfit'; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
+          <i class="fa-solid fa-satellite-dish"></i> Hacker Simulator
+        </button>
+        <div class="system-status">
+          <div class="status-dot"></div>
+          <span>SYSTEM SECURE</span>
+        </div>
       </div>
     </header>
 
-    <div class="kpi-grid">
-      <div class="kpi-card total">
-        <div class="kpi-header"><span>Total Flows Analysed</span><i class="fa-solid fa-chart-line kpi-icon" style="color:var(--primary)"></i></div>
-        <div class="kpi-value" id="total">0</div>
+    <!-- Simulator Modal -->
+    <div id="sim-modal" style="display: none; position: absolute; top: 80px; right: 16px; background: rgba(10, 15, 25, 0.95); border: 1px solid var(--danger); backdrop-filter: blur(16px); padding: 20px; border-radius: 12px; z-index: 100; width: 340px; box-shadow: 0 10px 50px rgba(225, 29, 72, 0.2); animation: fadeIn 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(225, 29, 72, 0.3); padding-bottom: 12px;">
+        <div style="font-size: 14px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;">
+          <i class="fa-solid fa-biohazard" style="color: var(--danger); animation: pulse 2s infinite;"></i> Hacker Console
+        </div>
+        <i class="fa-solid fa-xmark" style="color: var(--text-muted); cursor: pointer;" onclick="toggleSimModal()"></i>
       </div>
-      <div class="kpi-card allowed">
-        <div class="kpi-header"><span>Permitted</span><i class="fa-solid fa-circle-check kpi-icon" style="color:var(--success)"></i></div>
-        <div class="kpi-value" id="allowed" style="color:var(--success)">0</div>
-      </div>
-      <div class="kpi-card blocked">
-        <div class="kpi-header"><span>Intercepted</span><i class="fa-solid fa-circle-xmark kpi-icon" style="color:var(--danger)"></i></div>
-        <div class="kpi-value" id="blocked" style="color:var(--danger); text-shadow: 0 0 10px rgba(225, 29, 72, 0.4);">0</div>
-      </div>
-      <div class="kpi-card alerts">
-        <div class="kpi-header"><span>Threat Alerts</span><i class="fa-solid fa-triangle-exclamation kpi-icon" style="color:var(--warning)"></i></div>
-        <div class="kpi-value" id="alerts" style="color:var(--warning)">0</div>
-      </div>
-      <div class="kpi-card latency">
-        <div class="kpi-header"><span>Processing Latency</span><i class="fa-solid fa-microchip kpi-icon" style="color:var(--primary-glow)"></i></div>
-        <div class="kpi-value" id="latency-avg" style="color: var(--primary-glow);">0.00 ms</div>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(225, 29, 72, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(225, 29, 72, 0.2);">
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase;">Master Power</span>
+            <span style="font-size: 10px; color: var(--text-muted);">Enable continuous attack</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sim-power" onchange="toggleSimPower()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Attack Vector</label>
+          <select id="sim-mode" onchange="updateSimState()" style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px; border-radius: 6px; font-family: 'Outfit'; margin-top: 4px; outline: none;">
+            <option value="syn_flood">SYN Flood (DDoS)</option>
+            <option value="udp_flood">UDP Flood</option>
+            <option value="icmp_sweep">ICMP Ping Sweep</option>
+            <option value="port_scan">TCP Port Scan</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Target IP</label>
+          <input type="text" id="sim-target" oninput="updateSimState()" value="127.0.0.1" style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 13px; margin-top: 4px; outline: none;">
+        </div>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-gauge-high"></i> Intensity</label>
+            <span id="intensity-val" style="font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; color: var(--danger);">100 pkt/s</span>
+          </div>
+          <input type="range" id="sim-intensity" min="10" max="1000" value="100" step="10" oninput="handleIntensityDrag()" onchange="updateSimState()">
+        </div>
       </div>
     </div>
 
-    <div class="dashboard-grid">
-      <!-- Left Column -->
-      <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- TABS -->
+    <!-- Overview Tab -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="kpi-grid">
+        <div class="kpi-card total">
+          <div class="kpi-header"><span>Total Flows Analysed</span><i class="fa-solid fa-chart-line kpi-icon" style="color:var(--primary)"></i></div>
+          <div class="kpi-value" id="total">0</div>
+        </div>
+        <div class="kpi-card allowed">
+          <div class="kpi-header"><span>Permitted</span><i class="fa-solid fa-circle-check kpi-icon" style="color:var(--success)"></i></div>
+          <div class="kpi-value" id="allowed" style="color:var(--success)">0</div>
+        </div>
+        <div class="kpi-card blocked">
+          <div class="kpi-header"><span>Intercepted</span><i class="fa-solid fa-circle-xmark kpi-icon" style="color:var(--danger)"></i></div>
+          <div class="kpi-value" id="blocked" style="color:var(--danger); text-shadow: 0 0 10px rgba(225, 29, 72, 0.4);">0</div>
+        </div>
+        <div class="kpi-card alerts">
+          <div class="kpi-header"><span>Threat Alerts</span><i class="fa-solid fa-triangle-exclamation kpi-icon" style="color:var(--warning)"></i></div>
+          <div class="kpi-value" id="alerts" style="color:var(--warning)">0</div>
+        </div>
+        <div class="kpi-card latency">
+          <div class="kpi-header"><span>Processing Latency</span><i class="fa-solid fa-microchip kpi-icon" style="color:var(--primary-glow)"></i></div>
+          <div class="kpi-value" id="latency-avg" style="color: var(--primary-glow);">0.00 ms</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-wave-square"></i> Live Traffic Throughput (Packets/Sec)</div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="trafficChart"></canvas>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="panel" style="padding: 16px;">
+              <div class="panel-header" style="margin-bottom: 8px;"><div class="panel-title" style="font-size: 12px;"><i class="fa-solid fa-network-wired"></i> Protocol Dist</div></div>
+              <div class="mini-chart"><canvas id="protoChart"></canvas></div>
+            </div>
+            <div class="panel" style="padding: 16px;">
+              <div class="panel-header" style="margin-bottom: 8px;"><div class="panel-title" style="font-size: 12px;"><i class="fa-solid fa-gavel"></i> Actions</div></div>
+              <div class="mini-chart"><canvas id="verdictChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-brain"></i> Engine Analytics</div>
+            </div>
+            <div class="metric-list" id="ai-metrics">
+              <div class="metric-item">
+                <span class="metric-name"><i class="fa-solid fa-robot" style="color: var(--primary-glow);"></i> AI Decisions</span>
+                <span class="metric-val" id="metric-ai">0</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-name"><i class="fa-solid fa-scroll" style="color: var(--text-muted);"></i> Static Rule Hits</span>
+                <span class="metric-val" id="metric-rule">0</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-name"><i class="fa-solid fa-crosshairs" style="color: var(--warning);"></i> Active Attacker IPs</span>
+                <span class="metric-val" id="metric-attackers">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel" style="flex: 1;">
+            <div class="panel-header">
+              <div class="panel-title" style="color: var(--danger);"><i class="fa-solid fa-skull-crossbones"></i> Top Blocked Adversaries</div>
+            </div>
+            <div class="ban-grid" id="quarantine-grid">
+              <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Awaiting telemetry...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Threat Intel Tab -->
+    <div id="tab-intel" class="tab-content">
+      <div class="dashboard-grid">
         <div class="panel">
           <div class="panel-header">
-            <div class="panel-title"><i class="fa-solid fa-wave-square"></i> Live Traffic Throughput (Packets/Sec)</div>
+            <div class="panel-title"><i class="fa-solid fa-diagram-project"></i> Threat Clusters</div>
           </div>
           <div class="chart-wrapper">
-            <canvas id="trafficChart"></canvas>
+            <canvas id="clusterChart"></canvas>
           </div>
         </div>
-
-        <div class="stats-row">
-          <div class="panel" style="padding: 16px;">
-            <div class="panel-header" style="margin-bottom: 8px;"><div class="panel-title" style="font-size: 12px;"><i class="fa-solid fa-network-wired"></i> Protocol Dist</div></div>
-            <div class="mini-chart"><canvas id="protoChart"></canvas></div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><i class="fa-solid fa-user-secret"></i> AI Threat Explanations</div>
           </div>
-          <div class="panel" style="padding: 16px;">
-            <div class="panel-header" style="margin-bottom: 8px;"><div class="panel-title" style="font-size: 12px;"><i class="fa-solid fa-gavel"></i> Actions</div></div>
-            <div class="mini-chart"><canvas id="verdictChart"></canvas></div>
+          <div style="max-height: 260px; overflow-y: auto;" id="intel-explanations">
+            <!-- Cards appended here -->
           </div>
         </div>
       </div>
-
-      <!-- Right Column -->
-      <div style="display: flex; flex-direction: column; gap: 16px;">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title"><i class="fa-solid fa-brain"></i> AI Engine Analytics</div>
-          </div>
-          <div class="metric-list" id="ai-metrics">
-            <div class="metric-item">
-              <span class="metric-name"><i class="fa-solid fa-robot" style="color: var(--primary-glow);"></i> AI Decisions</span>
-              <span class="metric-val" id="metric-ai">0</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-name"><i class="fa-solid fa-scroll" style="color: var(--text-muted);"></i> Static Rule Hits</span>
-              <span class="metric-val" id="metric-rule">0</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-name"><i class="fa-solid fa-crosshairs" style="color: var(--warning);"></i> Active Attacker IPs</span>
-              <span class="metric-val" id="metric-attackers">0</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" style="flex: 1;">
-          <div class="panel-header">
-            <div class="panel-title" style="color: var(--danger);"><i class="fa-solid fa-skull-crossbones"></i> Top Blocked Adversaries</div>
-          </div>
-          <div class="ban-grid" id="quarantine-grid">
-            <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Awaiting telemetry...</span>
-          </div>
-        </div>
+      <div class="intel-grid" id="intel-cards-container">
+        <!-- More cards can go here -->
       </div>
     </div>
 
-    <!-- Logs Panel -->
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title"><i class="fa-solid fa-list-check"></i> Real-Time Flow Audit</div>
-      </div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Source</th>
-              <th>Destination</th>
-              <th>Proto</th>
-              <th>Port</th>
-              <th>Latency</th>
-              <th>Threat Score</th>
-              <th>Engine</th>
-              <th>Verdict</th>
-            </tr>
-          </thead>
-          <tbody id="log-body">
-            <tr>
-              <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 20px;">Initializing connection...</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Logs Tab -->
+    <div id="tab-logs" class="tab-content">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fa-solid fa-list-check"></i> Real-Time Flow Audit</div>
+        </div>
+        <div class="table-container" style="max-height: 70vh;">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Proto</th>
+                <th>Port</th>
+                <th>Latency</th>
+                <th>Threat Score</th>
+                <th>Engine</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="log-body">
+              <tr>
+                <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 20px;">Initializing connection...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
   </div>
 
   <script>
+    let simActive = false;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+      
+      if(tabId === 'overview') trafficChart.update();
+      if(tabId === 'intel') clusterChart.update();
+    }
+
+    function toggleSimModal() {
+      const modal = document.getElementById('sim-modal');
+      modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleIntensityDrag() {
+      const val = document.getElementById('sim-intensity').value;
+      document.getElementById('intensity-val').innerText = val + " pkt/s";
+    }
+
+    async function toggleSimPower() {
+      simActive = document.getElementById('sim-power').checked;
+      
+      if (simActive) {
+        document.getElementById('sim-modal').style.boxShadow = "0 10px 60px rgba(225, 29, 72, 0.4)";
+        document.getElementById('sim-mode').style.borderColor = "var(--danger)";
+        document.body.style.boxShadow = "inset 0 0 100px rgba(225, 29, 72, 0.1)";
+      } else {
+        document.getElementById('sim-modal').style.boxShadow = "0 10px 50px rgba(225, 29, 72, 0.2)";
+        document.getElementById('sim-mode').style.borderColor = "rgba(255,255,255,0.1)";
+        document.body.style.boxShadow = "none";
+      }
+
+      await fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: simActive ? 'start' : 'stop' })
+      });
+      if (simActive) { updateSimState(); }
+    }
+
+    async function updateSimState() {
+      const payload = {
+        command: 'update',
+        mode: document.getElementById('sim-mode').value,
+        target: document.getElementById('sim-target').value,
+        intensity: document.getElementById('sim-intensity').value
+      };
+      await fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
     Chart.defaults.color = '#64748b';
     Chart.defaults.font.family = 'Outfit';
 
-    // Timeline Chart (Packets/Sec)
+    // Traffic Chart Setup
     const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
     const gradLine = ctxTraffic.createLinearGradient(0, 0, 0, 260);
     gradLine.addColorStop(0, 'rgba(14, 165, 233, 0.4)');
@@ -281,13 +411,14 @@
 
     const trafficChart = new Chart(ctxTraffic, {
       type: 'line',
-      data: { labels: [], datasets: [{ data: [], borderColor: '#0ea5e9', backgroundColor: gradLine, borderWidth: 2, fill: true, tension: 0.3, pointRadius: 2, pointHoverRadius: 5 }] },
+      data: { labels: [], datasets: [{ data: [], borderColor: '#0ea5e9', backgroundColor: gradLine, borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }] },
       options: {
         responsive: true, maintainAspectRatio: false,
+        animation: { duration: 0 },
         plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
         scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+          x: { grid: { color: 'rgba(255,255,255,0.02)' } },
+          y: { grid: { color: 'rgba(255,255,255,0.02)' }, beginAtZero: true }
         }
       }
     });
@@ -306,27 +437,44 @@
       options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
     });
 
+    // Cluster Chart (Bubble)
+    const ctxCluster = document.getElementById('clusterChart').getContext('2d');
+    const clusterChart = new Chart(ctxCluster, {
+      type: 'bubble',
+      data: { datasets: [{ label: 'Threat Clusters', data: [], backgroundColor: 'rgba(225, 29, 72, 0.5)', borderColor: '#e11d48' }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: (ctx) => `IP: ${ctx.raw.ip} | Port: ${ctx.raw.y} | Count: ${ctx.raw.r}` }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Cluster ID' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { title: { display: true, text: 'Target Port' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
     let lastTotal = 0;
     const historyData = [];
-    const maxPts = 15;
+    const maxPts = 30;
 
-    async function refresh() {
+    async function fetchStats() {
       try {
         const stats = await fetch("/api/stats").then(r => r.json());
         
-        // Update KPIs
         document.getElementById("total").textContent = stats.total;
         document.getElementById("blocked").textContent = stats.blocked;
         document.getElementById("allowed").textContent = stats.allowed;
         document.getElementById("alerts").textContent = stats.alerts;
         document.getElementById("latency-avg").textContent = parseFloat(stats.latency_avg || 0).toFixed(2) + " ms";
 
-        // Traffic Delta (PPS proxy)
         const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const delta = Math.max(0, stats.total - lastTotal);
         lastTotal = stats.total;
         
-        // Only push delta if it's not the very first load jump
         if (historyData.length === 0) { historyData.push({ label: timeNow, value: 0 }); }
         else { historyData.push({ label: timeNow, value: delta }); }
         
@@ -335,56 +483,82 @@
         trafficChart.data.datasets[0].data = historyData.map(d => d.value);
         trafficChart.update();
 
-        // Update Proto Chart
         if (stats.protocols) {
           protoChart.data.labels = Object.keys(stats.protocols);
           protoChart.data.datasets[0].data = Object.values(stats.protocols);
           protoChart.update();
         }
 
-        // Update Verdict Chart
         verdictChart.data.labels = ['ALLOW', 'BLOCK', 'ALERT'];
         verdictChart.data.datasets[0].data = [stats.allowed, stats.blocked, stats.alerts];
         verdictChart.update();
 
-        // Update AI Metrics
         document.getElementById("metric-ai").textContent = stats.sources["AI_MODEL"] || 0;
         document.getElementById("metric-rule").textContent = stats.sources["STATIC_RULE"] || 0;
         const topAttackers = stats.top_attackers || {};
         document.getElementById("metric-attackers").textContent = Object.keys(topAttackers).length;
 
-        // Top Attackers Grid
         const banGrid = document.getElementById("quarantine-grid");
         if (Object.keys(topAttackers).length > 0) {
           banGrid.innerHTML = Object.entries(topAttackers).map(([ip, count]) => `
-            <span class="ban-badge">
-              <i class="fa-solid fa-skull"></i> ${ip} <span style="color:#fff; margin-left:4px;">(${count})</span>
-            </span>
+            <span class="ban-badge"><i class="fa-solid fa-skull"></i> ${ip} <span style="color:#fff; margin-left:4px;">(${count})</span></span>
           `).join("");
         } else {
           banGrid.innerHTML = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">No active threat bans.</span>`;
         }
+      } catch(e) {}
+    }
 
-        // Update Logs Table
+    async function fetchIntel() {
+      try {
+        const intel = await fetch("/api/threat_intel").then(r => r.json());
+        
+        const bubbleData = intel.clusters.map((c, i) => ({
+          x: i + 1,
+          y: c.port,
+          r: Math.min(c.count, 30), 
+          ip: c.ip,
+          type: c.type
+        }));
+        clusterChart.data.datasets[0].data = bubbleData;
+        clusterChart.update();
+
+        const expContainer = document.getElementById("intel-explanations");
+        if(intel.explanations.length > 0) {
+          expContainer.innerHTML = intel.explanations.map(e => `
+            <div class="intel-card" style="margin-bottom:8px;">
+              <div style="display:flex; justify-content:space-between;">
+                <div class="intel-ip"><i class="fa-solid fa-spider"></i> ${e.ip}</div>
+                <div class="intel-sig">${e.reason}</div>
+              </div>
+              <div class="intel-details">
+                <div>Port Target: <span>${e.port}</span></div>
+                <div>AI Confidence: <span style="color:var(--danger)">${e.confidence}</span></div>
+                <div style="grid-column: span 2;">Action Taken: <span style="color:var(--warning)">${e.action}</span></div>
+              </div>
+            </div>
+          `).join("");
+        }
+      } catch(e) {}
+    }
+
+    async function fetchLogs() {
+      try {
         const logs = await fetch("/api/logs").then(r => r.json());
         const body = document.getElementById("log-body");
         if (logs.length > 0) {
-          const sorted = [...logs].reverse().slice(0, 50);
+          const sorted = [...logs].reverse().slice(0, 100);
           body.innerHTML = sorted.map(r => {
             const timeFormatted = r.timestamp ? (r.timestamp.includes("T") ? r.timestamp.split("T")[1].slice(0, 8) : r.timestamp.slice(11, 19)) : "";
-            
             let vClass = "badge-allow"; let vText = "ALLOW";
             if (r.verdict === "BLOCK") { vClass = "badge-block"; vText = "BLOCK"; }
             else if (r.verdict === "ALERT") { vClass = "badge-alert"; vText = "ALERT"; }
-
             const isAI = r.source === "AI_MODEL" || r.source === "AI_GENERATED";
             const sClass = isAI ? "badge-ai" : "badge-rule";
             const sText = isAI ? "AI Model" : "Rule";
-            
             const score = parseFloat(r.score || 0);
             const scoreColor = score > 0.7 ? "var(--danger)" : (score > 0.4 ? "var(--warning)" : "var(--text-muted)");
             const lat = parseFloat(r.latency_ms || 0).toFixed(2);
-
             return `
               <tr>
                 <td>${timeFormatted}</td>
@@ -400,13 +574,17 @@
             `;
           }).join("");
         }
-      } catch (e) {
-        console.error("Dashboard error:", e);
-      }
+      } catch(e) {}
     }
 
-    refresh();
-    setInterval(refresh, 2500);
+    function refreshAll() {
+      fetchStats();
+      fetchIntel();
+      fetchLogs();
+    }
+
+    refreshAll();
+    setInterval(refreshAll, 1000); 
   </script>
 </body>
 </html>
