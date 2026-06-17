@@ -190,6 +190,9 @@ def _run_traffic_simulation():
 
 def start_capture(interface: str = "eth0"):
     print(f"[network_layer] Sniffing on {interface} ...")
+
+    
+
     try:
         sniff(iface=interface, prn=_process, store=False)
     except Exception as e:
