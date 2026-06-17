@@ -11,11 +11,23 @@ import threading
 import time
 import random
 
+MONITOR_IP = None
+
 packet_queue = queue.Queue(maxsize=10000)
+
+def set_monitor_ip(ip):
+    global MONITOR_IP
+    MONITOR_IP = ip
+    print(f"[network_layer] Monitoring target IP : {ip}")
 
 def _process(pkt):
     if IP not in pkt:
         return
+    
+    # Device-specific monitoring
+    if MONITOR_IP:
+        if pkt[IP].src != MONITOR_IP and  pkt[IP].dst != MONITOR_IP:
+            return
         
     tcp_flags = str(pkt[TCP].flags) if TCP in pkt else ""
     
@@ -188,3 +200,4 @@ def start_capture(interface: str = "eth0"):
         # Keep capture thread alive
         while True:
             time.sleep(1)
+ 
