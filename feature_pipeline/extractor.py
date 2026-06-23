@@ -51,6 +51,20 @@ def extract(flow_key: tuple, packets: list) -> dict:
     fin_flag = sum(1 for p in packets if p.get("flags") == "FIN")
     rst_flag = sum(1 for p in packets if p.get("flags") == "RST")
 
+    FEATURES = [
+        "pkt_count", "byte_count", "duration",
+        "mean_pkt_size", "std_pkt_size",
+        "src_port", "dst_port",
+        "proto_tcp", "proto_udp", "proto_icmp",
+        "syn_flag", "fin_flag", "rst_flag",
+        "packet_rate", "byte_rate", "syn_ratio"
+    ]
+
+    # derived rates
+    packet_rate = float(pkt_count) / duration if duration > 0 else float(pkt_count)
+    byte_rate = float(byte_count) / duration if duration > 0 else float(byte_count)
+    syn_ratio = float(syn_flag) / pkt_count if pkt_count > 0 else 0.0
+
     return{
         "pkt_count": pkt_count,
         "byte_count": byte_count,
@@ -65,6 +79,9 @@ def extract(flow_key: tuple, packets: list) -> dict:
         "syn_flag": syn_flag,
         "fin_flag": fin_flag,
         "rst_flag": rst_flag,
+        "packet_rate": packet_rate,
+        "byte_rate": byte_rate,
+        "syn_ratio": syn_ratio
     }
 
    

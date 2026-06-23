@@ -6,7 +6,9 @@ from sklearn.preprocessing import StandardScaler
 import joblib, os
 import pandas as pd
 
-SCALER_PATH = "feature_pipeline/scaler.pkl"
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")
 
 #IMPORTANT! = define feature order (must match extractor output)
 FEATURE_ORDER = [
