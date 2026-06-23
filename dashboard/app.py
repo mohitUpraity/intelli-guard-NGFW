@@ -7,7 +7,16 @@ from flask import Flask, jsonify, render_template, request
 import pandas as pd, os, subprocess, sys, threading, time
 from scapy.all import IP, TCP, UDP, ICMP, send, RandShort
 
+# >>> PRIYA: NEW — dashboard upgrade / admin panel (kept in its own file,
+# nothing below this line touches any of the original code or routes.
+from priya_admin_panel import priya_bp
+# <<< PRIYA
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
+
+# >>> PRIYA: register the new admin-panel routes (/admin, /api/admin/*)
+app.register_blueprint(priya_bp)
+# <<< PRIYA
 
 LOG_PATH = "data/logs/firewall_audit.csv"
 
