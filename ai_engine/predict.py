@@ -32,21 +32,23 @@ def predict_threat(processed_array, raw_features):
     Safely flattens the preprocessed 2D numpy array and runs prediction.
     """
     flat_features = list(processed_array.flatten())
-    
+
     prob = model.predict_proba([flat_features])[0]
     print(f"Probabilities: {prob}")
-    
-    # We trained with 3 classes: 0 (Allow), 1 (Alert), 2 (Block)
-    # Map probabilities to a 0.0 - 1.0 threat score
-    # Class 1 (Alert) contributes to middle range, Class 2 (Block) heavily
+
+    # We trained with 3 classes:
+    # 0 = Allow
+    # 1 = Alert
+    # 2 = Block
+
     score = float(prob[1] * 0.45 + prob[2] * 0.95)
 
-if score > BLOCK_THRESHOLD:
-    verdict = "BLOCK"
-elif score > ALERT_THRESHOLD:
-    verdict = "ALERT"
-else:
-    verdict = "ALLOW"
+    if score > BLOCK_THRESHOLD:
+        verdict = "BLOCK"
+    elif score > ALERT_THRESHOLD:
+        verdict = "ALERT"
+    else:
+        verdict = "ALLOW"
 
     return score, verdict
 
