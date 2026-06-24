@@ -1,6 +1,6 @@
 [
   {
-    "comment": "Block all traffic from known attacker IP (set this to your attacker_ip from config.yaml)",
+    "comment": "Block all traffic from known attacker IP (value loaded from config.yaml -> attacker_ip)",
     "src_ip": "192.168.1.20",
     "proto": "ANY",
     "dst_port": null,
@@ -8,31 +8,7 @@
     "source": "STATIC"
   },
   {
-    "comment": "Allow benign simulator traffic",
-    "src_ip": "192.168.1.50",
-    "proto": "ANY",
-    "dst_port": null,
-    "action": "ALLOW",
-    "source": "STATIC"
-  },
-  {
-    "comment": "Block SYN flood port — common DoS target",
-    "src_ip": "ANY",
-    "proto": "TCP",
-    "dst_port": 80,
-    "action": "BLOCK",
-    "source": "STATIC"
-  },
-  {
-    "comment": "Always allow SSH from localhost (so you don't lock yourself out)",
-    "src_ip": "127.0.0.1",
-    "proto": "TCP",
-    "dst_port": 22,
-    "action": "ALLOW",
-    "source": "STATIC"
-  },
-  {
-    "comment": "Block Telnet — unencrypted, always suspicious",
+    "comment": "Block Telnet - unencrypted protocol, always treated as suspicious",
     "src_ip": "ANY",
     "proto": "TCP",
     "dst_port": 23,
@@ -40,11 +16,35 @@
     "source": "STATIC"
   },
   {
-    "comment": "Block common malware C2 port",
+    "comment": "Block default Metasploit reverse-shell / common malware C2 port",
     "src_ip": "ANY",
     "proto": "TCP",
     "dst_port": 4444,
     "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Block SMB - common ransomware/lateral-movement port, should never be open to outside hosts",
+    "src_ip": "ANY",
+    "proto": "TCP",
+    "dst_port": 445,
+    "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Block RDP - frequent brute-force target, should not be exposed to untrusted IPs",
+    "src_ip": "ANY",
+    "proto": "TCP",
+    "dst_port": 3389,
+    "action": "BLOCK",
+    "source": "STATIC"
+  },
+  {
+    "comment": "Always allow DNS so the monitored device keeps internet access during testing",
+    "src_ip": "ANY",
+    "proto": "UDP",
+    "dst_port": 53,
+    "action": "ALLOW",
     "source": "STATIC"
   }
 ]
