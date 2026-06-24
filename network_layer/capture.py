@@ -6,28 +6,34 @@ Output → queue → feature_pipeline (Ilma's module)
 from scapy.all import sniff, IP, TCP, UDP, ICMP
 from network_layer.parser import parse
 
+import json
+import os
 import queue
 import threading
 import time
 import random
 
-MONITOR_IP = None
-
 packet_queue = queue.Queue(maxsize=10000)
 
-def set_monitor_ip(ip):
-    global MONITOR_IP
-    MONITOR_IP = ip
-    print(f"[network_layer] Monitoring target IP : {ip}")
+DEVICE_CONFIG = "data/admin/device_config.json"
+
+def get_admin_config():
+    try:
+        if os.path.exists(DEVICE_CONFIG):
+            with open(DEVICE_CONFIG, "r") as f:
+                return json.load(f)
+    except Exception:
+        pass
+
+    return {
+        "mode": "simulation",
+        "target_ip": "192.168.1.10",
+        "interface": "eth0"
+    }
 
 def _process(pkt):
     if IP not in pkt:
         return
-    
-    # Device-specific monitoring
-    if MONITOR_IP:
-        if pkt[IP].src != MONITOR_IP and  pkt[IP].dst != MONITOR_IP:
-            return
         
     tcp_flags = str(pkt[TCP].flags) if TCP in pkt else ""
     
@@ -69,8 +75,8 @@ def _run_traffic_simulation():
     print("[network_layer] Simulation thread started. Polling dashboard state...")
     import requests
     
-    benign_ips = ["192.168.1.50", "192.168.1.75", "192.168.1.99"]
-    victim_ip = "192.168.1.10"
+    cfg = get_admin_config()
+    victim_ip = cfg.get("target_ip", "192.168.1.10")
     
     while True:
         try:
@@ -87,7 +93,8 @@ def _run_traffic_simulation():
         # Baseline traffic is now controlled via the Hacker Console intensities.
 
         if sim_state.get("active"):
-            target = sim_state.get("target", victim_ip)
+            cfg = get_admin_config()
+            target = cfg.get("target_ip", victim_ip)
             intensities = sim_state.get("intensities", {})
             
             for mode, intensity in intensities.items():
@@ -189,18 +196,45 @@ def _run_traffic_simulation():
             time.sleep(0.5)
 
 def start_capture(interface: str = "eth0"):
-    print(f"[network_layer] Sniffing on {interface} ...")
 
-    
+    cfg = get_admin_config()
 
-    try:
-        sniff(iface=interface, prn=_process, store=False)
-    except Exception as e:
-        print(f"[network_layer] Sniffing on '{interface}' failed: {e}")
-        print("[network_layer] Automatically switching to high-fidelity Simulation Mode...")
-        sim_thread = threading.Thread(target=_run_traffic_simulation, daemon=True)
+    mode = str(cfg.get("mode", "simulation")).lower()
+    iface = cfg.get("interface", interface)
+
+    if mode == "simulation":
+        print("[network_layer] Starting in SIMULATION mode")
+
+        sim_thread = threading.Thread(
+            target=_run_traffic_simulation,
+            daemon=True
+        )
         sim_thread.start()
-        # Keep capture thread alive
+
         while True:
             time.sleep(1)
- 
+
+    print(f"[network_layer] Sniffing on {iface} ...")
+
+    try:
+        sniff(
+            iface=iface,
+            prn=_process,
+            store=False
+        )
+
+    except Exception as e:
+
+        print(f"[network_layer] Sniffing on '{iface}' failed: {e}")
+
+        print("[network_layer] Automatically switching to Simulation Mode...")
+
+        sim_thread = threading.Thread(
+            target=_run_traffic_simulation,
+            daemon=True
+        )
+
+        sim_thread.start()
+
+        while True:
+            time.sleep(1)

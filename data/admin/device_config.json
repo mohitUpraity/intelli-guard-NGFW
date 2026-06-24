@@ -1,0 +1,6 @@
+{
+  "interface": "Local Area Connection* 16",
+  "target_ip": "192.168.1.50",
+  "target_label": "",
+  "mode": "real"
+}

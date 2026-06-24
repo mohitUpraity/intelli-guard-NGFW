@@ -1,0 +1,11 @@
+[
+  {
+    "id": "d911ccc7",
+    "ip": "192.168.1.200",
+    "action": "BLOCK",
+    "reason": "Manually added by admin",
+    "created_at": "2026-06-24T06:37:11Z",
+    "enforced": false,
+    "enforce_error": null
+  }
+]
