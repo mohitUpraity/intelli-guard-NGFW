@@ -125,41 +125,36 @@ http://127.0.0.1:5001
 
 ## Main Monitoring Dashboard
 
-> *Insert screenshot here*
+The main dashboard provides real-time visibility into network traffic, firewall activity, and security events.
 
-```markdown
 ![Dashboard](docs/screenshots/dashboard.png)
-```
 
 ---
 
 ## Admin Panel
 
-> *Insert screenshot here*
+The admin panel allows administrators to configure the monitored device, switch between real and simulation modes, and manage attack simulations.
 
-```markdown
 ![Admin Panel](docs/screenshots/admin-panel.png)
-```
 
 ---
 
-## Threat Analytics
+## Live Traffic Monitoring
 
-> *Insert screenshot here*
+The dashboard visualizes network activity and threat trends in real time, helping administrators monitor ongoing traffic and detect suspicious behavior.
 
-```markdown
-![Threat Analytics](docs/screenshots/threat-analytics.png)
-```
+![Live Traffic Monitoring](docs/screenshots/threat-analytics.png)
 
 ---
 
 ## Firewall Rules
 
-> *Insert screenshot here*
+Administrators can create, manage, and monitor firewall rules directly from the dashboard. Rules are persisted and immediately reflected by the firewall engine.
 
-```markdown
 ![Firewall Rules](docs/screenshots/firewall-rules.png)
-```
+
+---
+
 
 ---
 
