@@ -1,76 +1,197 @@
-# 🛡 IntelliGuard Firewall
-**AI-Driven Next Generation Firewall**
-Sharda University, Agra — B.Tech CSE Final Project
-**Supervisor:** Satyasheel Sir | **Deadline:** 8 May 2026
+# 🛡️ IntelliGuard NGFW
+
+> **AI-Powered Next Generation Firewall for Real-Time Network Threat Detection and Monitoring**
+
+IntelliGuard NGFW is an AI-driven Next Generation Firewall developed during the **DRDO Internship Program** by a team of Computer Science students from **Sharda University, Agra**. The project combines traditional firewall policies with machine learning to monitor network traffic, detect malicious activity, and visualize security events through an interactive dashboard.
 
 ---
 
-## Team & Module Ownership
+## Features
 
-| Person | Module Folder | Branch |
-|---|---|---|
-| Mohit | `network_layer/` | `mohit/network` |
-| Ilma Rehman | `feature_pipeline/` | `ilma/features` |
-| Megha Singh | `firewall_engine/` | `megha/firewall` |
-| Priya Parihar | `dashboard/` | `priya/dashboard` |
-| Kunal Diwakar | `ai_engine/` | `kunal/ai` |
-
-**Golden rule: Only edit your own module folder.**
+* Real-time packet capture and traffic monitoring
+* Flow-based feature extraction pipeline
+* Machine Learning-based threat detection
+* Static and dynamic firewall rule management
+* Live security dashboard with analytics
+* Attack simulation environment
+* Device monitoring and IP-based targeting
+* Audit logging and threat visualization
 
 ---
 
-## Setup
+## System Architecture
+
+```text
+Network Layer
+      │
+      ▼
+Feature Pipeline
+      │
+      ▼
+AI Engine
+      │
+      ▼
+Firewall Engine
+      │
+      ▼
+Dashboard
+```
+
+For the detailed architecture, see **`docs/architecture.md`**.
+
+---
+
+## Project Structure
+
+```text
+intelli-guard-NGFW/
+│
+├── ai_engine/
+├── dashboard/
+├── feature_pipeline/
+├── firewall_engine/
+├── network_layer/
+├── data/
+├── docs/
+├── config.yaml
+├── main.py
+└── requirements.txt
+```
+
+---
+
+## Technology Stack
+
+* Python
+* Flask
+* Scapy
+* Scikit-Learn
+* Pandas
+* NumPy
+* HTML
+* CSS
+* JavaScript
+
+---
+
+## Getting Started
+
+### Clone the Repository
 
 ```bash
-# 1. Clone
-git clone https://github.com/YOUR_ORG/intelli-guard.git
-cd intelli-guard
+git clone https://github.com/mohitUpraity/intelli-guard-NGFW.git
+cd intelli-guard-NGFW
+```
 
-# 2. Install dependencies
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 3. Configure your network interface
-nano config.yaml        # set interface, victim_ip, attacker_ip
+### Configure
 
-# 4. Create your branch
-git checkout -b mohit/network   # replace with your name
+Update the required network interface and configuration values in:
+
+```text
+config.yaml
 ```
 
 ---
 
-## Run
+## Running the Project
+
+### Start the Firewall Engine
 
 ```bash
-# Full system (needs root for packet capture)
-sudo python main.py
+python main.py
+```
 
-# Dashboard only (no root needed)
+### Start the Dashboard
+
+```bash
 python dashboard/app.py
-# → open http://localhost:5000
+```
 
-# Train AI models (Kunal)
-python ai_engine/train_xgboost.py --data data/processed/dataset.csv
-python ai_engine/train_iforest.py --data data/processed/dataset.csv
+Open your browser at:
 
-# Simulate attacks (Mohit — from attacker PC)
-sudo python network_layer/simulate_traffic.py --mode syn_flood --target 192.168.1.10
+```text
+http://127.0.0.1:5001
 ```
 
 ---
 
-## Data Flow
+# Dashboard
 
-```
-network_layer → feature_pipeline → ai_engine → firewall_engine → dashboard
-   (Mohit)          (Ilma)           (Kunal)      (Megha)          (Priya)
-```
+## Main Monitoring Dashboard
 
-Modules talk via **shared queues** — zero direct imports across team boundaries.
-See `docs/architecture.md` for full diagram.
+> *Insert screenshot here*
+
+```markdown
+![Dashboard](docs/screenshots/dashboard.png)
+```
 
 ---
 
-## Git Workflow
+## Admin Panel
 
-See `docs/git_workflow.md`.
-Short version: one branch per person, PR to merge into main.
+> *Insert screenshot here*
+
+```markdown
+![Admin Panel](docs/screenshots/admin-panel.png)
+```
+
+---
+
+## Threat Analytics
+
+> *Insert screenshot here*
+
+```markdown
+![Threat Analytics](docs/screenshots/threat-analytics.png)
+```
+
+---
+
+## Firewall Rules
+
+> *Insert screenshot here*
+
+```markdown
+![Firewall Rules](docs/screenshots/firewall-rules.png)
+```
+
+---
+
+## Team
+
+| Member        | Responsibility                        |
+| ------------- | ------------------------------------- |
+| Mohit         | Network Layer                         |
+| Ilma Rehman   | Feature Pipeline & System Integration |
+| Kunal Diwakar | AI Engine                             |
+| Megha Singh   | Firewall Engine                       |
+| Priya Parihar | Dashboard & Visualization             |
+
+---
+
+## Documentation
+
+Additional documentation is available in the **docs/** directory.
+
+* System Architecture
+* Git Workflow
+* Internship Report
+* Defense Guide
+
+---
+
+## Version
+
+**Current Release:** v1.0
+
+---
+
+## License
+
+This project was developed as part of the DRDO Internship Program for academic and research purposes.
